@@ -1,6 +1,6 @@
 from pony.orm import PrimaryKey, Required, Set
 
-from spanf.globals import db
+from spanf.utils.globals import db
 
 
 class EventType(db.Entity):

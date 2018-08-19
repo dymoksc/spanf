@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pony.orm import PrimaryKey, Required
 
-from spanf.globals import db
+from spanf.utils.globals import db
 
 
 class EventLog(db.Entity):

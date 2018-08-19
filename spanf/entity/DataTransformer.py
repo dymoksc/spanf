@@ -1,6 +1,6 @@
 from pony.orm import PrimaryKey, Required, Optional, Set
 
-from spanf.globals import db
+from spanf.utils.globals import db
 
 
 class DataTransformer(db.Entity):
