@@ -50,6 +50,12 @@ class DataTransformer(db.Entity):
 
     producedData = Set('Data')
 
+    @staticmethod
+    @db_session
+    def getSuitable(data):
+        # type: (Data) -> list
+        return select(dt for dt in DataTransformer if dt.inputDataFormat == data.dataFormat)[:]
+
 
 class EventLog(db.Entity):
     _table_ = 'event_log'
