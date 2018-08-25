@@ -15,21 +15,19 @@ from subprocess import Popen, PIPE
 
 from pony.orm import db_session
 
-from spanf.logging_level import args
-from spanf.data_manager import DataManager
 from spanf.entities import Data, DataTransformer, EventLog
+from spanf.logging_level import args
 from spanf.timstamp_manager import TimestampManager
 
 # Creating services
 logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING)
 timestampManager = TimestampManager()
-dataManager = DataManager()
 
 # Fetching data
 logging.info('Getting the last data processing timestamp')
 processingTimestamp = timestampManager.updateTimestamp(TimestampManager.DATA_PROCESSING_TIMESTAMP_ID)
-logging.info('Timestamp: ' + processingTimestamp.isoformat())
-dataToProcess = dataManager.getDataNewerThan(processingTimestamp)
+logging.info('Timestamp: %s' % processingTimestamp)
+dataToProcess = Data.getEntriesNewerThan(processingTimestamp)
 logging.info('Loaded %d new data pieces' % len(dataToProcess))
 
 # Iterating through data entries

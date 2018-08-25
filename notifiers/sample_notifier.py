@@ -1,4 +1,4 @@
-import datetime
+import sys
 from argparse import ArgumentParser
 
 from pony.orm import db_session
@@ -9,7 +9,7 @@ parser = ArgumentParser()
 parser.add_argument('eventLogId', type=int)
 args = parser.parse_args()
 
-f = open('./sample_notifier.log', 'a')
+f = open('/home/gleb/Documents/cvut/sem2/Individualni_projekt/spanf/notifiers/sample_notifier.log', 'a')
 with db_session:
     eventLog = EventLog[args.eventLogId]  # type: EventLog
     f.write(
@@ -19,3 +19,5 @@ with db_session:
     )
 
 f.close()
+
+sys.exit(0)

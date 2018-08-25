@@ -7,6 +7,7 @@ from spanf.entities import ProcessingTimestamp
 
 class TimestampManager:
     DATA_PROCESSING_TIMESTAMP_ID = 1
+    NOTIFICATION_PROCESSING_TIMESTAMP_ID = 2
     ENABLE_AUTO_UPDATE = True
 
     def __init__(self):

@@ -11,6 +11,7 @@ class Client(db.Entity):
     name = Required(str)  # type: str
 
     sensors = Set('Sensor')
+    notifiers = Set('Notifier')
 
 
 class Data(db.Entity):
@@ -23,6 +24,12 @@ class Data(db.Entity):
 
     precursor = Optional('Data', reverse='successors')  # type: Data
     successors = Set('Data', reverse='precursor')
+
+    @staticmethod
+    @db_session
+    def getEntriesNewerThan(timestamp):
+        # type: (datetime) -> list
+        return select(d for d in Data if d.timestamp > timestamp)[:]
 
 
 class DataFormat(db.Entity):
@@ -41,7 +48,8 @@ class DataTransformer(db.Entity):
 
     id = PrimaryKey(int, auto=True)  # type: int
     path = Required(str)  # type: str
-    inputDataFormat = Required('DataFormat', reverse='dataTransformersTakingAsInput', column='input_data_format')  # type: DataFormat
+    inputDataFormat = Required('DataFormat', reverse='dataTransformersTakingAsInput',
+                               column='input_data_format')  # type: DataFormat
     outputDataFormat = Optional(
         'DataFormat',
         reverse='dataTransformersTakingAsOutput',
@@ -65,6 +73,12 @@ class EventLog(db.Entity):
     eventType = Required('EventType', column='event_type')  # type: EventType
     timestamp = Required(datetime, sql_default='NOW()')  # type: datetime
     notified = Required(bool, default=False)  # type: bool
+
+    @staticmethod
+    @db_session
+    def getEntriesNewerThan(timestamp):
+        # type: (datetime) -> list
+        return select(d for d in EventLog if d.timestamp > timestamp)[:]
 
 
 class EventType(db.Entity):
@@ -90,6 +104,20 @@ class Sensor(db.Entity):
 
     loggedEvents = Set('EventLog')
     data = Set('Data')
+
+
+class Notifier(db.Entity):
+    id = PrimaryKey(int, auto=True)  # type: int
+    path = Required(str)  # type: str
+
+    clients = Set('Client')
+
+    @staticmethod
+    @db_session
+    def getSuitable(eventLog):
+        # type: (EventLog) -> list[Notifier]
+        eventLog = EventLog[eventLog.id]
+        return select(n for n in Notifier if eventLog.sensor.client in n.clients)[:]
 
 
 db.generate_mapping(create_tables=True)
