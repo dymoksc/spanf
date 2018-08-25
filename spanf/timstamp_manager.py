@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pony.orm import db_session, ObjectNotFound, commit, show
+from pony.orm import db_session, ObjectNotFound
 
 from spanf.entities import ProcessingTimestamp
 
@@ -13,20 +13,18 @@ class TimestampManager:
         pass
 
     @db_session
-    def updateDataProcessingTimestamp(self, currentTimestamp=datetime.now()):
-        # type: (datetime) -> datetime
+    def updateTimestamp(self, timestampId, currentTimestamp=datetime.now()):
+        # type: (int, datetime) -> datetime
         try:
-            dataProcessingTimestamp = ProcessingTimestamp[self.DATA_PROCESSING_TIMESTAMP_ID]
-
+            processingTimestamp = ProcessingTimestamp[timestampId]
         except ObjectNotFound:
-            dataProcessingTimestamp = ProcessingTimestamp(
-                id=self.DATA_PROCESSING_TIMESTAMP_ID,
+            processingTimestamp = ProcessingTimestamp(
+                id=timestampId,
                 timestamp=datetime(1970, 01, 01, 0, 0, 0)
             )
-
         finally:
-            lastTimestamp = dataProcessingTimestamp.timestamp
+            # noinspection PyUnboundLocalVariable
+            lastTimestamp = processingTimestamp.timestamp
             if self.ENABLE_AUTO_UPDATE:
-                dataProcessingTimestamp.timestamp = currentTimestamp
-
+                processingTimestamp.timestamp = currentTimestamp
             return lastTimestamp

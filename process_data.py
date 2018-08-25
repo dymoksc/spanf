@@ -27,7 +27,7 @@ dataManager = DataManager()
 
 # Fetching data
 logging.info('Getting the last data processing timestamp')
-processingTimestamp = timestampManager.updateDataProcessingTimestamp()
+processingTimestamp = timestampManager.updateTimestamp(TimestampManager.DATA_PROCESSING_TIMESTAMP_ID)
 logging.info('Timestamp: ' + processingTimestamp.isoformat())
 dataToProcess = dataManager.getDataNewerThan(processingTimestamp)
 logging.info('Loaded %d new data pieces' % len(dataToProcess))
