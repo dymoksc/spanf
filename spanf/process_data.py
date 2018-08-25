@@ -1,3 +1,5 @@
+from subprocess import Popen, PIPE
+
 from spanf.data_manager import DataManager
 from spanf.entities import Data, DataTransformer
 from spanf.timstamp_manager import TimestampManager
@@ -13,4 +15,5 @@ dataToProcess = dataManager.getDataNewerThan(processingTimestamp)       # Gettin
 
 for data in dataToProcess:  # type: Data
     for dataTransformer in DataTransformer.getSuitable(data):  # type: DataTransformer
-        print(dataTransformer.path)
+        process = Popen(dataTransformer.path.split(), stdin=PIPE)
+        process.stdin.write(data.content)
