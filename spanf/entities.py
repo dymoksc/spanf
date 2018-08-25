@@ -7,29 +7,29 @@ db.bind(provider='mysql', host='localhost', user='signal', passwd='signal', db='
 
 
 class Client(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    id = PrimaryKey(int, auto=True)  # type: int
+    name = Required(str)  # type: str
 
     sensors = Set('Sensor')
 
 
 class Data(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    content = Required(buffer)
-    dataFormat = Required('DataFormat', column='data_format')
-    producer = Optional('DataTransformer')
-    sensor = Required('Sensor')
-    timestamp = Required(datetime, sql_default='NOW()')
+    id = PrimaryKey(int, auto=True)  # type: int
+    content = Required(buffer)  # type: buffer
+    dataFormat = Required('DataFormat', column='data_format')  # type: DataFormat
+    producer = Optional('DataTransformer')  # type: DataTransformer
+    sensor = Required('Sensor')  # type: Sensor
+    timestamp = Required(datetime, sql_default='NOW()')  # type: datetime
 
-    precursor = Optional('Data', reverse='successors')
+    precursor = Optional('Data', reverse='successors')  # type: Data
     successors = Set('Data', reverse='precursor')
 
 
 class DataFormat(db.Entity):
     _table_ = 'data_format'
 
-    id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    id = PrimaryKey(int, auto=True)  # type: int
+    name = Required(str)  # type: str
 
     data = Set('Data')
     dataTransformersTakingAsInput = Set('DataTransformer', reverse='inputDataFormat')
@@ -39,14 +39,14 @@ class DataFormat(db.Entity):
 class DataTransformer(db.Entity):
     _table_ = 'data_transformer'
 
-    id = PrimaryKey(int, auto=True)
-    path = Required(str)
-    inputDataFormat = Required('DataFormat', reverse='dataTransformersTakingAsInput', column='input_data_format')
+    id = PrimaryKey(int, auto=True)  # type: int
+    path = Required(str)  # type: str
+    inputDataFormat = Required('DataFormat', reverse='dataTransformersTakingAsInput', column='input_data_format')  # type: DataFormat
     outputDataFormat = Optional(
         'DataFormat',
         reverse='dataTransformersTakingAsOutput',
         column='output_data_format'
-    )  # NULL = event
+    )  # type: DataFormat
 
     producedData = Set('Data')
 
@@ -60,18 +60,18 @@ class DataTransformer(db.Entity):
 class EventLog(db.Entity):
     _table_ = 'event_log'
 
-    id = PrimaryKey(int, auto=True)
-    sensor = Required('Sensor')
-    eventType = Required('EventType', column='event_type')
-    timestamp = Required(datetime, sql_default='NOW()')
-    notified = Required(bool, default=False)
+    id = PrimaryKey(int, auto=True)  # type: int
+    sensor = Required('Sensor')  # type: Sensor
+    eventType = Required('EventType', column='event_type')  # type: EventType
+    timestamp = Required(datetime, sql_default='NOW()')  # type: datetime
+    notified = Required(bool, default=False)  # type: bool
 
 
 class EventType(db.Entity):
     _table_ = 'event_type'
 
-    id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    id = PrimaryKey(int, auto=True)  # type: int
+    name = Required(str)  # type: str
 
     loggedEvents = Set('EventLog')
 
@@ -79,14 +79,14 @@ class EventType(db.Entity):
 class ProcessingTimestamp(db.Entity):
     _table_ = 'processing_timestamp';
 
-    id = PrimaryKey(int)
-    timestamp = Required(datetime)
+    id = PrimaryKey(int)  # type: int
+    timestamp = Required(datetime)  # type: datetime
 
 
 class Sensor(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    location = Required(str)
-    client = Required('Client')
+    id = PrimaryKey(int, auto=True)  # type: int
+    location = Required(str)  # type: str
+    client = Required('Client')  # type: Client
 
     loggedEvents = Set('EventLog')
     data = Set('Data')
