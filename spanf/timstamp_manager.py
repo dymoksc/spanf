@@ -6,7 +6,8 @@ from spanf.entities import ProcessingTimestamp
 
 
 class TimestampManager:
-    DATA_PROCESSING_TIMESTAMP_ID = 1  # type: int
+    DATA_PROCESSING_TIMESTAMP_ID = 1
+    ENABLE_AUTO_UPDATE = True
 
     def __init__(self):
         pass
@@ -16,13 +17,16 @@ class TimestampManager:
         # type: (datetime) -> datetime
         try:
             dataProcessingTimestamp = ProcessingTimestamp[self.DATA_PROCESSING_TIMESTAMP_ID]
+
         except ObjectNotFound:
             dataProcessingTimestamp = ProcessingTimestamp(
                 id=self.DATA_PROCESSING_TIMESTAMP_ID,
                 timestamp=datetime(1970, 01, 01, 0, 0, 0)
             )
+
         finally:
             lastTimestamp = dataProcessingTimestamp.timestamp
-            dataProcessingTimestamp.timestamp = currentTimestamp
+            if self.ENABLE_AUTO_UPDATE:
+                dataProcessingTimestamp.timestamp = currentTimestamp
 
             return lastTimestamp
