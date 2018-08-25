@@ -21,8 +21,8 @@ class Data(db.Entity):
     sensor = Required('Sensor')
     timestamp = Required(datetime, sql_default='NOW()')
 
-    precursor = Optional('Data', reverse='successor')
-    successor = Optional('Data', reverse='precursor')
+    precursor = Optional('Data', reverse='successors')
+    successors = Set('Data', reverse='precursor')
 
 
 class DataFormat(db.Entity):
