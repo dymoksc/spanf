@@ -15,7 +15,7 @@ from subprocess import Popen, PIPE
 
 from pony.orm import db_session
 
-from logging_level import args
+from spanf.logging_level import args
 from spanf.data_manager import DataManager
 from spanf.entities import Data, DataTransformer, EventLog
 from spanf.timstamp_manager import TimestampManager
