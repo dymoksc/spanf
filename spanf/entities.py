@@ -2,7 +2,6 @@ from datetime import datetime
 
 from pony.orm import *
 
-set_sql_debug(True)
 db = Database()
 db.bind(provider='mysql', host='localhost', user='signal', passwd='signal', db='signal')
 
