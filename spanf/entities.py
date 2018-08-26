@@ -17,7 +17,7 @@ class ToDictMixin:
         pass
 
 
-class Client(db.Entity):
+class Client(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
     name = Required(str)  # type: str
 
@@ -25,7 +25,7 @@ class Client(db.Entity):
     notifiers = Set('Notifier')
 
 
-class Data(db.Entity):
+class Data(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
     content = Required(buffer)  # type: buffer
     dataFormat = Required('DataFormat', column='data_format')  # type: DataFormat
@@ -42,8 +42,11 @@ class Data(db.Entity):
         # type: (datetime) -> list
         return select(d for d in Data if d.timestamp > timestamp)[:]
 
+    def toDictId(self):
+        return OrderedDict(sorted(self.to_dict(exclude=['content']).iteritems(), key=lambda (k, v): k != 'id'))
 
-class DataFormat(db.Entity):
+
+class DataFormat(db.Entity, ToDictMixin):
     _table_ = 'data_format'
 
     id = PrimaryKey(int, auto=True)  # type: int
@@ -54,7 +57,7 @@ class DataFormat(db.Entity):
     dataTransformersTakingAsOutput = Set('DataTransformer', reverse='outputDataFormat')
 
 
-class DataTransformer(db.Entity):
+class DataTransformer(db.Entity, ToDictMixin):
     _table_ = 'data_transformer'
 
     id = PrimaryKey(int, auto=True)  # type: int
@@ -92,7 +95,7 @@ class EventLog(db.Entity, ToDictMixin):
         return select(d for d in EventLog if d.timestamp > timestamp)[:]
 
 
-class EventType(db.Entity):
+class EventType(db.Entity, ToDictMixin):
     _table_ = 'event_type'
 
     id = PrimaryKey(int, auto=True)  # type: int
@@ -101,14 +104,14 @@ class EventType(db.Entity):
     loggedEvents = Set('EventLog')
 
 
-class ProcessingTimestamp(db.Entity):
+class ProcessingTimestamp(db.Entity, ToDictMixin):
     _table_ = 'processing_timestamp';
 
     id = PrimaryKey(int)  # type: int
     timestamp = Required(datetime)  # type: datetime
 
 
-class Sensor(db.Entity):
+class Sensor(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
     location = Required(str)  # type: str
     client = Required('Client')  # type: Client
@@ -117,7 +120,7 @@ class Sensor(db.Entity):
     data = Set('Data')
 
 
-class Notifier(db.Entity):
+class Notifier(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
     path = Required(str)  # type: str
 
