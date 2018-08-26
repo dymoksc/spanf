@@ -2,4 +2,16 @@
 
 {% block contents %}
 	<h1>I am a datagrid with {{ entities | length }} elements</h1>
+
+	{% if entities | length %}
+		<table class="table">
+			<thead>
+				<tr>
+					{% for fieldName, field in entities[0].toDictId().iteritems() %}
+						<th>{{ fieldName }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+		</table>
+	{% endif %}
 {% endblock %}

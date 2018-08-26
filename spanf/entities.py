@@ -1,9 +1,20 @@
+from abc import abstractmethod
+from collections import OrderedDict
 from datetime import datetime
 
 from pony.orm import *
 
 db = Database()
 db.bind(provider='mysql', host='localhost', user='signal', passwd='signal', db='signal')
+
+
+class ToDictMixin:
+    def toDictId(self):
+        return OrderedDict(sorted(self.to_dict().iteritems(), key=lambda (k, v): k != 'id'))
+
+    @abstractmethod
+    def to_dict(self):
+        pass
 
 
 class Client(db.Entity):
@@ -65,7 +76,7 @@ class DataTransformer(db.Entity):
         return select(dt for dt in DataTransformer if dt.inputDataFormat == data.dataFormat)[:]
 
 
-class EventLog(db.Entity):
+class EventLog(db.Entity, ToDictMixin):
     _table_ = 'event_log'
 
     id = PrimaryKey(int, auto=True)  # type: int
