@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 
 {% block contents %}
-	<h1>I am a datagrid with {{ entities | length }} elements</h1>
+	<h1>
+		{{ entityName }}
+		({{ entities | length }} {{ 'entry' if entities | length == 1 else 'entries' }})
+	</h1>
 
 	{% if entities | length %}
 		<table class="table">
