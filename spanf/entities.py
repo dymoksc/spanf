@@ -9,8 +9,8 @@ db.bind(provider='mysql', host='localhost', user='signal', passwd='signal', db='
 
 
 class ToDictMixin:
-    def toDictId(self):
-        return OrderedDict(sorted(self.to_dict().iteritems(), key=lambda (k, v): k != 'id'))
+    def toDictId(self, **toDictOptions):
+        return OrderedDict(sorted(self.to_dict(related_objects=True, **toDictOptions).iteritems(), key=lambda (k, v): k != 'id'))
 
     @abstractmethod
     def to_dict(self):
@@ -43,7 +43,7 @@ class Data(db.Entity, ToDictMixin):
         return select(d for d in Data if d.timestamp > timestamp)[:]
 
     def toDictId(self):
-        return OrderedDict(sorted(self.to_dict(exclude=['content']).iteritems(), key=lambda (k, v): k != 'id'))
+        return super(Data, self).toDictId(exclude=['content'])
 
 
 class DataFormat(db.Entity, ToDictMixin):

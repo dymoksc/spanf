@@ -16,7 +16,13 @@
 				{% for entity in entities %}
 					<tr>
 						{% for fieldValue in entity.toDictId().values() %}
-							<td>{{ fieldValue }}</td>
+							<td>
+								{% if fieldValue | isEntity %}
+									<a href="{{ fieldValue | entityLink }}">{{ fieldValue.__class__.__name__ }}</a>
+								{% else %}
+									{{ fieldValue }}
+								{% endif %}
+							</td>
 						{% endfor %}
 					</tr>
 				{% endfor %}
