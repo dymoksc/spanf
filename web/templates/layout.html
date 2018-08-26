@@ -9,6 +9,17 @@
 	<script src="/static/bower_components/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<h1>hi</h1>
+	<div class="container">
+		<div class="row">
+			<ul class="nav">
+
+			</ul>
+		</div>
+		<div class="row">
+			{% if contents %}
+				{{ contents }}
+			{% endif %}
+		</div>
+	</div>
 </body>
 </html>
