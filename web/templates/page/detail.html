@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block contents %}
+<div class="container">
+	<div class="row">
+		<h3 class="pb-5 pt-3">
+			{{ entity.__class__.__name__ }}
+			#{{ entity.id }}
+		</h3>
+	</div>
+
+	<div class="row">
+		<form action="." method="post" class="container">
+
+				{% for key, value in entity.toDictId().iteritems() %}
+					<div class="form-group row">
+						<label for="{{ key }}" class="col-2">{{ key }}</label>
+						{% if value | isEntity or key in entity.getNullableFieldClass().keys() %}
+							{% set valueClass = value.__class__ if value | isEntity else entity.getNullableFieldClass()[key] %}
+							<select name="{{ key }}" id="{{ key }}">
+								<option {{ "selected" if not value }}>None</option>
+								{% for id, name in valueClass.getChoices() %}
+									<option value="{{ id }}" {{ "selected" if value and value.id == id }}>{{ name }}</option>
+								{% endfor %}
+							</select>
+						{% else %}
+							<input id="{{ key }}" name="{{ key }}" type="text" class="col-3" {{ "disabled" if key == "id" }} value="{{ value }}">
+						{% endif %}
+					</div>
+				{% endfor %}
+
+		</form>
+	</div>
+</div>
+{% endblock %}

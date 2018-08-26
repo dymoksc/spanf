@@ -18,9 +18,11 @@
 			<tbody>
 				{% for entity in entities %}
 					<tr>
-						{% for fieldValue in entity.toDictId().values() %}
+						{% for fieldKey, fieldValue in entity.toDictId().iteritems() %}
 							<td>
-								{% if fieldValue | isEntity %}
+								{% if fieldKey == "id" %}
+									<a href="{{ entity | entityLink }}">{{ fieldValue }}</a>
+								{% elif fieldValue | isEntity %}
 									<a href="{{ fieldValue | entityLink }}">{{ fieldValue.__class__.__name__ }}</a>
 								{% else %}
 									{{ fieldValue }}

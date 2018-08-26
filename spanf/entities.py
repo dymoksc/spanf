@@ -16,6 +16,20 @@ class ToDictMixin:
     def to_dict(self):
         pass
 
+    @classmethod
+    def getChoices(cls):
+        # type: () -> list[tuple[int, str]]
+        return select((e.id, e.getName()) for e in cls)[:]
+
+    @abstractmethod
+    def getName(self):
+        pass
+
+    @staticmethod
+    def getNullableFieldClass():
+        # type: () -> dict
+        return {}
+
 
 class Client(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
@@ -23,6 +37,9 @@ class Client(db.Entity, ToDictMixin):
 
     sensors = Set('Sensor')
     notifiers = Set('Notifier')
+
+    def getName(self):
+        return self.name
 
 
 class Data(db.Entity, ToDictMixin):
@@ -45,6 +62,9 @@ class Data(db.Entity, ToDictMixin):
     def toDictId(self):
         return super(Data, self).toDictId(exclude=['content'])
 
+    def getName(self):
+        return 'Data #%d' % self.id
+
 
 class DataFormat(db.Entity, ToDictMixin):
     _table_ = 'data_format'
@@ -55,6 +75,9 @@ class DataFormat(db.Entity, ToDictMixin):
     data = Set('Data')
     dataTransformersTakingAsInput = Set('DataTransformer', reverse='inputDataFormat')
     dataTransformersTakingAsOutput = Set('DataTransformer', reverse='outputDataFormat')
+
+    def getName(self):
+        return self.name
 
 
 class DataTransformer(db.Entity, ToDictMixin):
@@ -78,6 +101,14 @@ class DataTransformer(db.Entity, ToDictMixin):
         # type: (Data) -> list
         return select(dt for dt in DataTransformer if dt.inputDataFormat == data.dataFormat)[:]
 
+    @staticmethod
+    def getNullableFieldClass():
+        # type: () -> dict
+        return {'outputDataFormat': DataFormat}
+
+    def getName(self):
+        return self.path
+
 
 class EventLog(db.Entity, ToDictMixin):
     _table_ = 'event_log'
@@ -94,6 +125,9 @@ class EventLog(db.Entity, ToDictMixin):
         # type: (datetime) -> list
         return select(d for d in EventLog if d.timestamp > timestamp)[:]
 
+    def getName(self):
+        return self.timestamp
+
 
 class EventType(db.Entity, ToDictMixin):
     _table_ = 'event_type'
@@ -103,12 +137,18 @@ class EventType(db.Entity, ToDictMixin):
 
     loggedEvents = Set('EventLog')
 
+    def getName(self):
+        return self.name
+
 
 class ProcessingTimestamp(db.Entity, ToDictMixin):
     _table_ = 'processing_timestamp';
 
     id = PrimaryKey(int)  # type: int
     timestamp = Required(datetime)  # type: datetime
+
+    def getName(self):
+        return str(self.timestamp)
 
 
 class Sensor(db.Entity, ToDictMixin):
@@ -118,6 +158,9 @@ class Sensor(db.Entity, ToDictMixin):
 
     loggedEvents = Set('EventLog')
     data = Set('Data')
+
+    def getName(self):
+        return 'Sensor at %s' % self.location
 
 
 class Notifier(db.Entity, ToDictMixin):
@@ -132,6 +175,9 @@ class Notifier(db.Entity, ToDictMixin):
         # type: (EventLog) -> list[Notifier]
         eventLog = EventLog[eventLog.id]
         return select(n for n in Notifier if eventLog.sensor.client in n.clients)[:]
+
+    def getName(self):
+        return self.path
 
 
 db.generate_mapping(create_tables=True)

@@ -12,7 +12,7 @@ def getNavigation():
     # type: () -> dict
     navigation = {}
     for entityName in EntityClasses.getAllClassNames():
-        navigation[url_for('list', entityName=entityName)] = entityName
+        navigation[url_for('listEntities', entityName=entityName)] = entityName
 
     return navigation
 
@@ -26,12 +26,22 @@ def renderInLayout(templateFileName, **context):
 
 
 # Routes
-@app.route('/list/<entityName>')
-def list(entityName):
+@app.route('/<string:entityName>')
+def listEntities(entityName):
     # type: (str) -> str
     return renderInLayout(
         'page/datagrid.html',
-        entities=select(entity for entity in EntityClasses.getClassByName(entityName))[:]
+        entities=select(entity for entity in EntityClasses.getClassByName(entityName))[:],
+        entityName=entityName
+    )
+
+
+@app.route('/<string:entityName>/<int:entityId>')
+def detail(entityName, entityId):
+    # type: (str, int) -> str
+    return renderInLayout(
+        'page/detail.html',
+        entity=EntityClasses.getClassByName(entityName)[entityId]
     )
 
 
@@ -51,4 +61,4 @@ def isEntity(object):
 @app.template_filter('entityLink')
 def getEntityLink(entity):
     # type: (db.Entity) -> str
-    return url_for('list', entityName=entity.__class__.__name__)
+    return url_for('detail', entityName=entity.__class__.__name__, entityId=entity.id)
