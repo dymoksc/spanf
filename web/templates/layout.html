@@ -12,13 +12,15 @@
 	<div class="container">
 		<div class="row">
 			<ul class="nav">
-
+				{% for url, name in navigation.iteritems() %}
+					<li class="nav-item">
+						<a href="{{ url }}" class="nav-link">{{ name }}</a>
+					</li>
+				{% endfor %}
 			</ul>
 		</div>
 		<div class="row">
-			{% if contents %}
-				{{ contents }}
-			{% endif %}
+			{% block contents %}{% endblock %}
 		</div>
 	</div>
 </body>
