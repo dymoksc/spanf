@@ -1,8 +1,8 @@
 Signal Processing Analysis and Notification Framework
 =====================================================
 
-This a prototype of a framework designed to receive raw signal readouts from sensors, belonging to the specified set of
-clients. Those readouts are afterwards to be processed by the specified set of so called data transformers - any
+This is a prototype of a framework designed to receive raw signal readouts from sensors, belonging to the specified set
+of clients. Those readouts are afterwards to be processed by the specified set of so called data transformers - any
 executable capable of receiving a binary input on STDIN and then responding in the specified format to STDOUT.
 Processing by any of these data transforming modules can lead to one of the two possible outcomes: creation of a new
 data entry in the output format of this data transformer, or creation of a new event log entry. Event log entries are
@@ -56,8 +56,9 @@ The framework prototype offers following core executable scripts:
 
 * upload_raw_data.py - used for the initial upload of the raw readouts from sensors, for detailed usage run: 
 	`./upload_raw_data.py -h `
-* process_data.py - data processing unit, used without arguments
-* process_notifications.py - notification processing unit, used without arguments
+* process_data.py - data processing unit, used without any required arguments (optional -v will enable the verbose mode)
+* process_notifications.py - notification processing unit, used without any required arguments (optional -v will enable
+	the verbose mode)
 
 Then, the prototype contains following sample scripts, which you could use, when testing your setup:
 
