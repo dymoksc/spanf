@@ -1,11 +1,12 @@
 import json
+import os
 from abc import abstractmethod
 from collections import OrderedDict
 from datetime import datetime
 
 from pony.orm import *
 
-with open('../config.json') as f:
+with open(os.path.dirname(__file__) + '/../config.json') as f:
     config = json.load(f)
     f.close()
 
