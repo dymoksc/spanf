@@ -1,11 +1,16 @@
+import json
 from abc import abstractmethod
 from collections import OrderedDict
 from datetime import datetime
 
 from pony.orm import *
 
+with open('../config.json') as f:
+    config = json.load(f)
+    f.close()
+
 db = Database()
-db.bind(provider='mysql', host='localhost', user='signal', passwd='signal', db='signal')
+db.bind(**config)
 
 
 class ToDictMixin:
