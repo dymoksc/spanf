@@ -69,6 +69,8 @@ Then, the prototype contains following sample scripts, which you could use, whil
 * notifiers/sample_notifier.py - sample notifier, simply appends a message about any event it receives (*please, make
 	sure, that the notifiers/sample_notifier.log file is accessible and writable by the script*).
 	
+Note, that event emitters should have set *None* as their output format to function properly.
+	
 ### Frontend
 
 The frontend is presented with a database administration interface with three main views, available on the
