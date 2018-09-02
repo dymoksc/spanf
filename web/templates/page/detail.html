@@ -5,7 +5,7 @@
 	<div class="row">
 		<h2 class="pb-5 pt-3">
 			{{ entity.__class__.__name__ }}
-			#{{ entity.id }}
+			{{ '#' ~ entity.id if entity.id }}
 		</h2>
 	</div>
 
