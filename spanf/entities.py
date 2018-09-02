@@ -80,6 +80,8 @@ class DataFormat(db.Entity, ToDictMixin):
 
     id = PrimaryKey(int, auto=True)  # type: int
     name = Required(str)  # type: str
+    mimeType = Required(str, column='mime_type')  # type: str
+    extension = Required(str)  # type: str
 
     data = Set('Data')
     dataTransformersTakingAsInput = Set('DataTransformer', reverse='inputDataFormat')
