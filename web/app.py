@@ -2,6 +2,7 @@ import re
 
 from flask import Flask, render_template, url_for, redirect, request, Response
 from pony.flask import Pony
+from pony.orm import ObjectNotFound
 
 from spanf.entities import db, Data
 from spanf.entity_classes import EntityClasses, select
@@ -20,6 +21,7 @@ def getNavigation():
 
 
 def renderInLayout(templateFileName, **context):
+    # type: (str, **object) -> Response
     return render_template(
         templateFileName,
         navigation=getNavigation(),
@@ -30,7 +32,7 @@ def renderInLayout(templateFileName, **context):
 # Routes
 @app.route('/<string:entityName>')
 def listEntities(entityName):
-    # type: (str) -> str
+    # type: (str) -> Response
     kwargs={
         'entities': select(entity for entity in EntityClasses.getClassByName(entityName))[:],
         'entityName': entityName,
@@ -43,8 +45,11 @@ def listEntities(entityName):
 
 @app.route('/<string:entityName>/<int:entityId>', methods=['GET', 'POST'])
 def detail(entityName, entityId):
-    # type: (str, int) -> str
-    entity = EntityClasses.getClassByName(entityName)[entityId]
+    # type: (str, int) -> Response
+    try:
+        entity = EntityClasses.getClassByName(entityName)[entityId]
+    except ObjectNotFound as e:
+        return Response('Entity not found: %s' % e.message, status=404)
 
     if request.method == 'POST':
         nullableFieldNames = entity.getNullableFieldClass().keys()
@@ -64,7 +69,12 @@ def detail(entityName, entityId):
 
 @app.route('/downloadData/<int:dataId>')
 def downloadRawData(dataId):
-    data = Data[dataId]
+    # type: (int) -> Response
+    try:
+        data = Data[dataId]
+    except ObjectNotFound as e:
+        return Response('Entity not found: %s' % e.message, status=404)
+
     return Response(
         data.content,
         mimetype=data.dataFormat.mimeType,
@@ -73,7 +83,7 @@ def downloadRawData(dataId):
 
 @app.route('/')
 def index():
-    # type: () -> str
+    # type: () -> Response
     return redirect(getNavigation().keys()[0])
 
 
