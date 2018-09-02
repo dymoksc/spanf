@@ -1,10 +1,21 @@
 {% extends "layout.html" %}
 
 {% block contents %}
-	<h1>
-		{{ entityName | pascalCaseToPretty }}
-		({{ entities | length }} {{ 'entry' if entities | length == 1 else 'entries' }})
-	</h1>
+	<div class="container">
+		<div class="row">
+			<div class="col-10">
+				<h2>
+					{{ entityName | pascalCaseToPretty }}
+					({{ entities | length }} {{ 'entry' if entities | length == 1 else 'entries' }})
+				</h2>
+			</div>
+			<div class="col-2">
+				<a href="{{ entityName | newEntityLink }}" class="btn btn-success">
+					+ Create new
+				</a>
+			</div>
+		</div>
+	</div>
 
 	{% if entities | length %}
 		<table class="table">

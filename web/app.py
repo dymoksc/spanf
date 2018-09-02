@@ -106,7 +106,14 @@ def getEntityLink(entity):
     # type: (db.Entity) -> str
     return url_for('detail', entityName=entity.__class__.__name__, entityId=entity.id)
 
+
 @app.template_filter('pascalCaseToPretty')
 def pascalCaseToPretty(input):
     # type: (str) -> str
     return ' '.join(re.findall('([A-Z]?[^A-Z]+)', input)).capitalize()
+
+
+@app.template_filter('newEntityLink')
+def getNewEntityLink(entityName):
+    # type: (str) -> str
+    return url_for('detail', entityName=entityName, entityId=0)
