@@ -17,7 +17,9 @@
 					{% if value | isEntity or key in entity.getNullableFieldClass().keys() %}
 						{% set valueClass = value.__class__ if value | isEntity else entity.getNullableFieldClass()[key] %}
 						<select name="{{ key }}" id="{{ key }}">
-							<option value="" {{ "selected" if not value }}>None</option>
+							{% if key in entity.getNullableFieldClass().keys() %}
+								<option value="" {{ "selected" if not value }}>None</option>
+							{% endif %}
 							{% for id, name in valueClass.getChoices() %}
 								<option value="{{ id }}" {{ "selected" if value and value.id == id }}>{{ name }}</option>
 							{% endfor %}
