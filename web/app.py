@@ -1,6 +1,6 @@
 import re
 
-from flask import Flask, render_template, url_for, redirect, request, Response
+from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from pony.flask import Pony
 from pony.orm import ObjectNotFound
 
@@ -26,6 +26,7 @@ def renderInLayout(templateFileName, **context):
     return render_template(
         templateFileName,
         navigation=getNavigation(),
+        request=request,
         **context
     )
 
@@ -56,7 +57,7 @@ def detail(entityName, entityId):
 
     if request.method == 'DELETE':
         entity.delete()
-        return redirect(url_for('listEntities', entityName=entityName))
+        return Response('Entity successfully removed')
 
     if request.method == 'POST':
         nullableFieldNames = entity.getNullableFieldClass().keys()
@@ -68,7 +69,6 @@ def detail(entityName, entityId):
     return renderInLayout(
         'page/detail.html',
         entity=entity,
-        request=request,
         entityName=entityName,
         goBackLink=url_for('listEntities', entityName=entityName)
     )

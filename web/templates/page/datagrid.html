@@ -16,6 +16,7 @@
 					{% if downloadLink is defined %}
 						<th></th>
 					{% endif %}
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -37,6 +38,11 @@
 								<a href="{{ downloadLink | format(entity.id) }}">Download</a>
 							</td>
 						{% endif %}
+						<td>
+							<form action="{{ entity | entityLink }}" method="delete">
+								<button type="submit" class="btn btn-link">✖</button>
+							</form>
+						</td>
 					</tr>
 				{% endfor %}
 			</tbody>
