@@ -13,6 +13,9 @@
 					{% for fieldName in entities[0].toDictId().keys() %}
 						<th>{{ fieldName }}</th>
 					{% endfor %}
+					{% if downloadLink is defined %}
+						<th></th>
+					{% endif %}
 				</tr>
 			</thead>
 			<tbody>
@@ -29,6 +32,11 @@
 								{% endif %}
 							</td>
 						{% endfor %}
+						{% if downloadLink is defined %}
+							<td>
+								<a href="{{ downloadLink | format(entity.id) }}">Download</a>
+							</td>
+						{% endif %}
 					</tr>
 				{% endfor %}
 			</tbody>

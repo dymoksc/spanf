@@ -1,7 +1,7 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, Response
 from pony.flask import Pony
 
-from spanf.entities import db
+from spanf.entities import db, Data
 from spanf.entity_classes import EntityClasses, select
 
 app = Flask(__name__)
@@ -29,11 +29,14 @@ def renderInLayout(templateFileName, **context):
 @app.route('/<string:entityName>')
 def listEntities(entityName):
     # type: (str) -> str
-    return renderInLayout(
-        'page/datagrid.html',
-        entities=select(entity for entity in EntityClasses.getClassByName(entityName))[:],
-        entityName=entityName
-    )
+    kwargs={
+        'entities': select(entity for entity in EntityClasses.getClassByName(entityName))[:],
+        'entityName': entityName,
+    }
+    if entityName == 'Data':
+        kwargs['downloadLink'] = url_for('downloadRawData', dataId=0).replace('0', '%d')
+
+    return renderInLayout('page/datagrid.html', **kwargs)
 
 
 @app.route('/<string:entityName>/<int:entityId>', methods=['GET', 'POST'])
@@ -49,6 +52,15 @@ def detail(entityName, entityId):
             setattr(entity, fieldName, fieldValue)
 
     return renderInLayout('page/detail.html', entity=entity, request=request, entityName=entityName)
+
+
+@app.route('/downloadData/<int:dataId>')
+def downloadRawData(dataId):
+    data = Data[dataId]
+    return Response(
+        data.content,
+        mimetype=data.dataFormat.mimeType,
+    )
 
 
 @app.route('/')
