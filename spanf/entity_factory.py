@@ -1,5 +1,4 @@
 from spanf.entities import *
-from spanf.timstamp_manager import TimestampManager
 
 
 class EntityFactory:
@@ -14,15 +13,22 @@ class EntityFactory:
     def build(className):
         # type: (str) -> db.Entity
         if className == 'DataTransformer':
-            return DataTransformer(
-                path='.',
-                inputDataFormat=next(select(f for f in DataFormat)[:].__iter__())
-            )
+            return DataTransformer(path='.', inputDataFormat=next(select(f for f in DataFormat)[:].__iter__()))
 
         elif className == 'Client':
-            return Client(
-                name='Client name'
-            )
+            return Client(name='Client name')
+
+        elif className == 'EventType':
+            return EventType(name='Event type name')
+
+        elif className == 'DataFormat':
+            return DataFormat(mimeType='application/octet-stream', name='Data format name')
+
+        elif className == 'Notifier':
+            return Notifier(path='.')
+
+        elif className == 'Sensor':
+            return Sensor(location='Sensor location', client=next(select(c for c in Client)[:].__iter__()))
 
         else:
             raise NotImplementedError
