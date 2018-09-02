@@ -9,17 +9,17 @@
 	<script src="/static/bower_components/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-	<div class="container">
-		<div class="row p-2">
-			<ul class="nav border m-auto">
+	<div class="container card mt-3">
+		<div class="row card-header">
+			<ul class="nav nav-tabs card-header-tabs ml-auto mr-auto">
 				{% for url, name in navigation.iteritems() %}
 					<li class="nav-item">
-						<a href="{{ url }}" class="nav-link">{{ name }}</a>
+						<a href="{{ url }}" class="nav-link {{ 'active' if entityName is defined and name == entityName }}">{{ name }}</a>
 					</li>
 				{% endfor %}
 			</ul>
 		</div>
-		<div class="row">
+		<div class="row card-body">
 			{% block contents %}{% endblock %}
 		</div>
 	</div>
