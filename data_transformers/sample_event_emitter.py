@@ -1,4 +1,4 @@
-#!/usr/bin/env python+
+#!/usr/bin/env python
 
 """
 Sample event emitting data transformer executable. Regardless of data sent to its STDIN randomly outputs event type or
