@@ -6,6 +6,7 @@ from pony.orm import ObjectNotFound
 
 from spanf.entities import db, Data
 from spanf.entity_classes import EntityClasses, select
+from spanf.entity_factory import EntityFactory
 
 app = Flask(__name__)
 Pony(app)
@@ -43,13 +44,19 @@ def listEntities(entityName):
     return renderInLayout('page/datagrid.html', **kwargs)
 
 
-@app.route('/<string:entityName>/<int:entityId>', methods=['GET', 'POST'])
+@app.route('/<string:entityName>/<int:entityId>', methods=['GET', 'POST', 'DELETE'])
 def detail(entityName, entityId):
     # type: (str, int) -> Response
     try:
         entity = EntityClasses.getClassByName(entityName)[entityId]
     except ObjectNotFound as e:
-        return Response('Entity not found: %s' % e.message, status=404)
+        if entityId != 0:
+            return Response('Entity not found: %s' % e.message, status=404)
+        entity = EntityFactory.build(entityName)
+
+    if request.method == 'DELETE':
+        entity.delete()
+        return redirect(url_for('listEntities', entityName=entityName))
 
     if request.method == 'POST':
         nullableFieldNames = entity.getNullableFieldClass().keys()
