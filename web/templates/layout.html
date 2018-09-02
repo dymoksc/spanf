@@ -14,7 +14,9 @@
 			<ul class="nav nav-tabs card-header-tabs ml-auto mr-auto">
 				{% for url, name in navigation.iteritems() %}
 					<li class="nav-item">
-						<a href="{{ url }}" class="nav-link {{ 'active' if entityName is defined and name == entityName }}">{{ name }}</a>
+						<a href="{{ url }}" class="nav-link {{ 'active' if entityName is defined and name == entityName }}">
+							{{ name | pascalCaseToPretty }}
+						</a>
 					</li>
 				{% endfor %}
 			</ul>

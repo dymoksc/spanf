@@ -2,7 +2,7 @@
 
 {% block contents %}
 	<h1>
-		{{ entityName }}
+		{{ entityName | pascalCaseToPretty }}
 		({{ entities | length }} {{ 'entry' if entities | length == 1 else 'entries' }})
 	</h1>
 
@@ -11,7 +11,7 @@
 			<thead>
 				<tr>
 					{% for fieldName in entities[0].toDictId().keys() %}
-						<th>{{ fieldName }}</th>
+						<th>{{ fieldName | pascalCaseToPretty }}</th>
 					{% endfor %}
 					{% if downloadLink is defined %}
 						<th></th>
@@ -26,7 +26,7 @@
 								{% if fieldKey == "id" %}
 									<a href="{{ entity | entityLink }}">{{ fieldValue }}</a>
 								{% elif fieldValue | isEntity %}
-									<a href="{{ fieldValue | entityLink }}">{{ fieldValue.__class__.__name__ }}</a>
+									<a href="{{ fieldValue | entityLink }}">{{ fieldValue.__class__.__name__ | pascalCaseToPretty }}</a>
 								{% else %}
 									{{ fieldValue }}
 								{% endif %}

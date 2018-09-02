@@ -1,3 +1,5 @@
+import re
+
 from flask import Flask, render_template, url_for, redirect, request, Response
 from pony.flask import Pony
 
@@ -86,3 +88,8 @@ def isEntity(object):
 def getEntityLink(entity):
     # type: (db.Entity) -> str
     return url_for('detail', entityName=entity.__class__.__name__, entityId=entity.id)
+
+@app.template_filter('pascalCaseToPretty')
+def pascalCaseToPretty(input):
+    # type: (str) -> str
+    return ' '.join(re.findall('([A-Z]?[^A-Z]+)', input)).capitalize()

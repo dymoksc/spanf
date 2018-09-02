@@ -13,7 +13,7 @@
 		<form action="{{ request.url }}" method="post" class="container">
 			{% for key, value in entity.toDictId().iteritems() %}
 				<div class="form-group row">
-					<label for="{{ key }}" class="col-2">{{ key }}</label>
+					<label for="{{ key }}" class="col-2">{{ key | pascalCaseToPretty }}</label>
 					{% if value | isEntity or key in entity.getNullableFieldClass().keys() %}
 						{% set valueClass = value.__class__ if value | isEntity else entity.getNullableFieldClass()[key] %}
 						<select name="{{ key }}" id="{{ key }}">
