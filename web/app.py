@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
 from pony.flask import Pony
 
 from spanf.entities import db
@@ -36,13 +36,20 @@ def listEntities(entityName):
     )
 
 
-@app.route('/<string:entityName>/<int:entityId>')
+@app.route('/<string:entityName>/<int:entityId>', methods=['GET', 'POST'])
 def detail(entityName, entityId):
     # type: (str, int) -> str
-    return renderInLayout(
-        'page/detail.html',
-        entity=EntityClasses.getClassByName(entityName)[entityId]
-    )
+    entity = EntityClasses.getClassByName(entityName)[entityId]
+
+    # TODO: data detail POST processing
+    if request.method == 'POST':
+        nullableFieldNames = entity.getNullableFieldClass().keys()
+        for fieldName, fieldValue in request.form.iteritems():
+            if fieldName in nullableFieldNames and len(fieldValue) == 0:
+                fieldValue = None
+            setattr(entity, fieldName, fieldValue)
+
+    return renderInLayout('page/detail.html', entity=entity, request=request)
 
 
 @app.route('/')
