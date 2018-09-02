@@ -2,7 +2,7 @@ import re
 
 from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from pony.flask import Pony
-from pony.orm import ObjectNotFound
+from pony.orm import ObjectNotFound, flush
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from spanf.entities import db, Data
@@ -56,6 +56,7 @@ def detail(entityName, entityId):
             raise NotFound(description='Entity not found: %s' % e.message)
         try:
             entity = EntityFactory.build(entityName)
+            flush()
         except NotImplementedError:
             raise MethodNotAllowed(description='Manual entity creation not allowed for this entity')
 
@@ -74,7 +75,8 @@ def detail(entityName, entityId):
         'page/detail.html',
         entity=entity,
         entityName=entityName,
-        goBackLink=url_for('listEntities', entityName=entityName)
+        goBackLink=url_for('listEntities', entityName=entityName),
+        formProcessLink=url_for('detail', entityName=entityName, entityId=entity.id)
     )
 
 
