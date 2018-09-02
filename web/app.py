@@ -51,7 +51,13 @@ def detail(entityName, entityId):
                 fieldValue = None
             setattr(entity, fieldName, fieldValue)
 
-    return renderInLayout('page/detail.html', entity=entity, request=request, entityName=entityName)
+    return renderInLayout(
+        'page/detail.html',
+        entity=entity,
+        request=request,
+        entityName=entityName,
+        goBackLink=url_for('listEntities', entityName=entityName)
+    )
 
 
 @app.route('/downloadData/<int:dataId>')
