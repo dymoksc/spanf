@@ -63,7 +63,16 @@ class Data(db.Entity, ToDictMixin):
         return super(Data, self).toDictId(exclude=['content'])
 
     def getName(self):
-        return 'Data #%d' % self.id
+        return 'Data #' + str(self.id)
+
+    @staticmethod
+    def getNullableFieldClass():
+        # type: () -> dict
+        return {
+            'dataFormat': DataFormat,
+            'producer': DataTransformer,
+            'precursor': Data,
+        }
 
 
 class DataFormat(db.Entity, ToDictMixin):
@@ -160,7 +169,7 @@ class Sensor(db.Entity, ToDictMixin):
     data = Set('Data')
 
     def getName(self):
-        return 'Sensor at %s' % self.location
+        return 'Sensor at ' + self.location
 
 
 class Notifier(db.Entity, ToDictMixin):
