@@ -54,8 +54,8 @@ Parts of the framework
 
 The framework prototype offers following core executable scripts:
 
-* upload_raw_data.py - used for the initial upload of the raw readouts from sensors, for detailed usage run: 
-	`./upload_raw_data.py -h `;
+* upload_raw_data.py - used for the initial upload of the raw readouts from sensors, data is received on STDIN for
+	detailed usage run: `./upload_raw_data.py -h `;
 * process_data.py - data processing unit, used without any required arguments (optional -v will enable the verbose mode);
 * process_notifications.py - notification processing unit, used without any required arguments (optional -v will enable
 	the verbose mode).
