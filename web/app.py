@@ -3,11 +3,12 @@ import re
 from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from pony.flask import Pony
 from pony.orm import ObjectNotFound, flush
-from werkzeug.exceptions import MethodNotAllowed, NotFound
+from werkzeug.exceptions import MethodNotAllowed, NotFound, BadRequest
 
 from spanf.entities import db, Data
 from spanf.entity_classes import EntityClasses, select
 from spanf.entity_factory import EntityFactory
+from spanf.no_child_entities_found import NoChildEntitiesFound
 
 app = Flask(__name__)
 Pony(app)
@@ -59,6 +60,8 @@ def detail(entityName, entityId):
             flush()
         except NotImplementedError:
             raise MethodNotAllowed(description='Manual entity creation not allowed for this entity')
+        except NoChildEntitiesFound as e:
+            raise BadRequest(description=e.message)
 
     if request.method == 'DELETE':
         entity.delete()

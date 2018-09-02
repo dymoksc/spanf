@@ -1,4 +1,5 @@
 from spanf.entities import *
+from spanf.no_child_entities_found import NoChildEntitiesFound
 
 
 class EntityFactory:
@@ -13,7 +14,10 @@ class EntityFactory:
     def build(className):
         # type: (str) -> db.Entity
         if className == 'DataTransformer':
-            return DataTransformer(path='.', inputDataFormat=next(select(f for f in DataFormat)[:].__iter__()))
+            try:
+                return DataTransformer(path='.', inputDataFormat=next(select(f for f in DataFormat)[:].__iter__()))
+            except StopIteration:
+                raise NoChildEntitiesFound('DataTransformer entity creation requires at least one DataFormat entity to be already present')
 
         elif className == 'Client':
             return Client(name='Client name')
@@ -28,7 +32,10 @@ class EntityFactory:
             return Notifier(path='.')
 
         elif className == 'Sensor':
-            return Sensor(location='Sensor location', client=next(select(c for c in Client)[:].__iter__()))
+            try:
+                return Sensor(location='Sensor location', client=next(select(c for c in Client)[:].__iter__()))
+            except StopIteration:
+                raise NoChildEntitiesFound('Sensor entity creation requires at least one Client entity to be already present')
 
         else:
             raise NotImplementedError

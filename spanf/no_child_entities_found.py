@@ -1,0 +1,2 @@
+class NoChildEntitiesFound(Exception):
+    pass
