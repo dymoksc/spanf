@@ -3,6 +3,7 @@ import re
 from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from pony.flask import Pony
 from pony.orm import ObjectNotFound
+from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 from spanf.entities import db, Data
 from spanf.entity_classes import EntityClasses, select
@@ -52,8 +53,11 @@ def detail(entityName, entityId):
         entity = EntityClasses.getClassByName(entityName)[entityId]
     except ObjectNotFound as e:
         if entityId != 0:
-            return Response('Entity not found: %s' % e.message, status=404)
-        entity = EntityFactory.build(entityName)
+            raise NotFound(description='Entity not found: %s' % e.message)
+        try:
+            entity = EntityFactory.build(entityName)
+        except NotImplementedError:
+            raise MethodNotAllowed(description='Entity creation not allowed for this entity')
 
     if request.method == 'DELETE':
         entity.delete()
@@ -80,7 +84,7 @@ def downloadRawData(dataId):
     try:
         data = Data[dataId]
     except ObjectNotFound as e:
-        return Response('Entity not found: %s' % e.message, status=404)
+        raise NotFound(description='Entity not found: %s' % e.message)
 
     return Response(
         data.content,
