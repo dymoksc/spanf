@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Executable, processing dat in the following steps:
     - fetching all unprocessed data entries accumulated in the database since the last execution

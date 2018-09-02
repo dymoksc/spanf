@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 from argparse import ArgumentParser
 
@@ -9,7 +11,7 @@ parser = ArgumentParser()
 parser.add_argument('eventLogId', type=int)
 args = parser.parse_args()
 
-f = open('/home/gleb/Documents/cvut/sem2/Individualni_projekt/spanf/notifiers/sample_notifier.log', 'a')
+f = open(os.path.dirname(__file__) + '/sample_notifier.log', 'a')
 with db_session:
     eventLog = EventLog[args.eventLogId]  # type: EventLog
     f.write(
