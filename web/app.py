@@ -57,7 +57,7 @@ def detail(entityName, entityId):
         try:
             entity = EntityFactory.build(entityName)
         except NotImplementedError:
-            raise MethodNotAllowed(description='Entity creation not allowed for this entity')
+            raise MethodNotAllowed(description='Manual entity creation not allowed for this entity')
 
     if request.method == 'DELETE':
         entity.delete()
