@@ -67,7 +67,8 @@ Then, the prototype contains following sample scripts, which you could use, whil
 	type with an ID = 1 (*please, make sure, that such event type is present in the database, before using this
 	transformer*);
 * notifiers/sample_notifier.py - sample notifier, simply appends a message about any event it receives (*please, make
-	sure, that the notifiers/sample_notifier.log file is accessible and writable by the script*).
+	sure, that the notifiers/sample_notifier.log file is accessible and writable by the script*). Requires the project
+	root in PYTHONPATH
 	
 Note, that event emitters should have set *None* as their output format to function properly.
 	
