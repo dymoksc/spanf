@@ -41,7 +41,6 @@ def detail(entityName, entityId):
     # type: (str, int) -> str
     entity = EntityClasses.getClassByName(entityName)[entityId]
 
-    # TODO: data detail POST processing
     if request.method == 'POST':
         nullableFieldNames = entity.getNullableFieldClass().keys()
         for fieldName, fieldValue in request.form.iteritems():
