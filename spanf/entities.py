@@ -16,7 +16,13 @@ db.bind(**config)
 
 class ToDictMixin:
     def toDictId(self, **toDictOptions):
-        return OrderedDict(sorted(self.to_dict(related_objects=True, **toDictOptions).iteritems(), key=lambda (k, v): k != 'id'))
+        manyToManyValues = {}
+        for fieldName in self.getManyToManyFields().keys():
+            manyToManyValues[fieldName] = getattr(self, fieldName)
+
+        dict = self.to_dict(related_objects=True, **toDictOptions)
+        dict.update(manyToManyValues)
+        return OrderedDict(sorted(dict.iteritems(), key=lambda (k, v): k != 'id'))
 
     @abstractmethod
     def to_dict(self):
@@ -36,6 +42,11 @@ class ToDictMixin:
         # type: () -> dict
         return {}
 
+    @staticmethod
+    def getManyToManyFields():
+        # type: () -> dict
+        return {}
+
 
 class Client(db.Entity, ToDictMixin):
     id = PrimaryKey(int, auto=True)  # type: int
@@ -46,6 +57,12 @@ class Client(db.Entity, ToDictMixin):
 
     def getName(self):
         return self.name
+
+    @staticmethod
+    def getManyToManyFields():
+        return {
+            'notifiers': Notifier,
+        }
 
 
 class Data(db.Entity, ToDictMixin):

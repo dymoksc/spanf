@@ -24,6 +24,14 @@
 								<option value="{{ id }}" {{ "selected" if value and value.id == id }}>{{ name }}</option>
 							{% endfor %}
 						</select>
+					{% elif key in entity.getManyToManyFields().keys() %}
+						{% set valueClass = entity.getManyToManyFields()[key] %}
+						{% set valueIds = value | extractEntitiesId %}
+						<select name="{{ key }}" id="{{ key }}" multiple>
+							{% for id, name in valueClass.getChoices() %}
+								<option value="{{ id }}" {{ "selected" if id in valueIds }}>{{ name }}</option>
+							{% endfor %}
+						</select>
 					{% else %}
 						<input id="{{ key }}" name="{{ key }}" type="text" class="col-3" {{ "disabled" if key == "id" }} value="{{ value }}">
 					{% endif %}

@@ -1,4 +1,6 @@
 import re
+from pprint import pprint
+from sets import Set
 
 from flask import Flask, render_template, url_for, redirect, request, Response, abort
 from pony.flask import Pony
@@ -37,7 +39,7 @@ def renderInLayout(templateFileName, **context):
 @app.route('/<string:entityName>')
 def listEntities(entityName):
     # type: (str) -> Response
-    kwargs={
+    kwargs = {
         'entities': select(entity for entity in EntityClasses.getClassByName(entityName))[:],
         'entityName': entityName,
     }
@@ -69,10 +71,15 @@ def detail(entityName, entityId):
 
     if request.method == 'POST':
         nullableFieldNames = entity.getNullableFieldClass().keys()
+        manyToManyFields = entity.getManyToManyFields()
         for fieldName, fieldValue in request.form.iteritems():
+            if fieldName in manyToManyFields.keys():
+                continue
             if fieldName in nullableFieldNames and len(fieldValue) == 0:
                 fieldValue = None
             setattr(entity, fieldName, fieldValue)
+        for fieldName, fieldClass in manyToManyFields.iteritems():
+            setattr(entity, fieldName, (fieldClass[entityId] for entityId in request.form.getlist(fieldName)))
 
     return renderInLayout(
         'page/detail.html',
@@ -126,3 +133,14 @@ def pascalCaseToPretty(input):
 def getNewEntityLink(entityName):
     # type: (str) -> str
     return url_for('detail', entityName=entityName, entityId=0)
+
+
+@app.template_filter('extractEntitiesId')
+def extractEntitiesId(traversable):
+    # type: (list) -> list
+    return [entity.id for entity in traversable]
+
+
+# Making global functions available
+app.jinja_env.globals.update(getattr=getattr)
+app.jinja_env.globals.update(pprint=pprint)
